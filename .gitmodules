@@ -1,6 +1,6 @@
 [submodule "doc-tracker-ui"]
 	path = doc-tracker-ui
-	url = https://github.com/imamdwicaksono/doc-tracker-ui-nextjs.git
+	url = git@github.com:imamdwicaksono/doc-tracker-ui-nextjs.git
 [submodule "doc-tracker-api"]
 	path = doc-tracker-api
-	url = https://github.com/imamdwicaksono/doc-tracker-api.git
+	url = git@github.com:imamdwicaksono/doctracker-blockchain.git
