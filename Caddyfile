@@ -1,0 +1,62 @@
+docutrack.mmsgroup.test:443 {
+	tls docutrack.mmsgroup.test+1.pem docutrack.mmsgroup.test+1-key.pem
+
+	# WebSocket HMR atau koneksi upgrade
+	@websocket {
+		header Connection *Upgrade*
+		header Upgrade websocket
+	}
+	handle @websocket {
+		reverse_proxy localhost:3000
+	}
+
+	# CORS preflight untuk API
+	@cors_preflight {
+		method OPTIONS
+		path /api/*
+	}
+	handle @cors_preflight {
+		header Access-Control-Allow-Origin "https://docutrack.mmsgroup.test"
+		header Access-Control-Allow-Credentials "true"
+		header Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+		header Access-Control-Allow-Headers "Origin, Content-Type, Accept, Authorization, X-Requested-With"
+		respond 204
+	}
+
+	# Backend API
+	handle /api/* {
+		header Access-Control-Allow-Origin "https://docutrack.mmsgroup.test"
+		header Access-Control-Allow-Credentials "true"
+		reverse_proxy localhost:3002
+	}
+
+	handle /evidence/* {
+		header Access-Control-Allow-Origin "https://docutrack.mmsgroup.test"
+		header Access-Control-Allow-Credentials "true"
+		reverse_proxy localhost:3002
+	}
+
+	# Frontend Next.js
+	handle {
+		reverse_proxy localhost:3000
+	}
+}
+
+# api.docutrack.mmsgroup.test:443 {
+#     tls docutrack.mmsgroup.test+1.pem docutrack.mmsgroup.test+1-key.pem
+
+#     @options method OPTIONS
+#     handle @options {
+#         header Access-Control-Allow-Origin "https://docutrack.mmsgroup.test"
+#         header Access-Control-Allow-Credentials "true"
+#         header Access-Control-Allow-Methods "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+#         header Access-Control-Allow-Headers "Origin, Content-Type, Accept, Authorization, X-Requested-With"
+#         respond 204
+#     }
+
+#     handle {
+#         header Access-Control-Allow-Origin "http://docutrack.mmsgroup.test"
+#         header Access-Control-Allow-Credentials "true"
+#         reverse_proxy localhost:3002
+#     }
+# }
