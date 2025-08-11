@@ -71,6 +71,7 @@ stop_caddy
 # Kill processes only if they exist
 kill_port 3002 || true
 kill_port 3000 || true
+kill_port 3003 || true
 kill_port
 
 # Start API service
