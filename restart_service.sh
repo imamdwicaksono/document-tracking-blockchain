@@ -77,20 +77,39 @@ kill_port
 # Start API service
 cd doc-tracker-api || { echo "Error: doc-tracker-api directory not found"; exit 1; }
 mkdir -p logs
-echo "Starting API service..."
-go run cmd/main.go > logs/api.log 2>&1 &
+if [[ "$1" == "--prod" ]]; then
+  echo "Building API for production..."
+  go build -o doc-tracker-api cmd/main.go > logs/api_build.log 2>&1
+  echo "Starting API service (production)..."
+  ./doc-tracker-api > logs/api.log 2>&1 &
+else
+  echo "Starting API service (development)..."
+  go run cmd/main.go > logs/api.log 2>&1 &
+fi
 API_PID=$!
 echo "API service started with PID $API_PID"
 cd ..
 
 # Start UI service
-cd doc-tracker-ui || { echo "Error: doc-tracker-ui directory not found"; exit 1; }
-mkdir -p logs
-echo "Starting UI service..."
-npm run dev-turbo > >(rotatelogs -n 5 logs/ui.log 1M) 2>&1 &
-UI_PID=$!
-echo "UI service started with PID $UI_PID"
-cd ..
+if [[ "$1" == "--prod" ]]; then
+  cd doc-tracker-ui || { echo "Error: doc-tracker-ui directory not found"; exit 1; }
+  mkdir -p logs
+  echo "Building UI for production..."
+  npm run build > logs/ui_build.log 2>&1
+  echo "Starting UI service (production)..."
+  npm run start > logs/ui.log 2>&1 &
+  UI_PID=$!
+  echo "UI service started with PID $UI_PID"
+  cd ..
+else
+  cd doc-tracker-ui || { echo "Error: doc-tracker-ui directory not found"; exit 1; }
+  mkdir -p logs
+  echo "Starting UI service (development)..."
+  npm run dev-turbo > >(rotatelogs -n 5 logs/ui.log 1M) 2>&1 &
+  UI_PID=$!
+  echo "UI service started with PID $UI_PID"
+  cd ..
+fi
 
 # Start Caddy server
 mkdir -p logs
