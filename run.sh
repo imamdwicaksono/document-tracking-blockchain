@@ -34,7 +34,7 @@ cd - >/dev/null
 # Jalankan Go server di background
 echo "⚙️ Menjalankan Go server..."
 cd "${GO_DIR}" || exit 1
-nohup ./doc-tracking-api > "../../${GO_LOG}" 2>&1 &
+nohup ./document-tracking-api > "../../${GO_LOG}" 2>&1 &
 GO_PID=$!
 echo "✅ Go server berjalan (PID: ${GO_PID}), log: ${GO_LOG}"
 cd - >/dev/null
