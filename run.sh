@@ -11,7 +11,7 @@ GO_LOG="go.log"
 
 # Direktori masing-masing service
 NEXT_DIR="./doc-tracker-ui"
-GO_DIR="./doc-tracker-api/cmd"
+GO_DIR="./doc-tracker-api/builds"
 
 # Port yang digunakan (optional untuk debugging)
 NEXT_PORT=3000
@@ -26,7 +26,7 @@ kill -9 $(lsof -t -i:${GO_PORT}) 2>/dev/null || true
 # Jalankan Next.js di background
 echo "🚀 Menjalankan Next.js..."
 cd "${NEXT_DIR}" || exit 1
-nohup npm run dev > "../${NEXT_LOG}" 2>&1 &
+nohup npm start > "../${NEXT_LOG}" 2>&1 &
 NEXT_PID=$!
 echo "✅ Next.js berjalan (PID: ${NEXT_PID}), log: ${NEXT_LOG}"
 cd - >/dev/null
@@ -34,7 +34,7 @@ cd - >/dev/null
 # Jalankan Go server di background
 echo "⚙️ Menjalankan Go server..."
 cd "${GO_DIR}" || exit 1
-nohup go run main.go > "../../${GO_LOG}" 2>&1 &
+nohup ./doc-tracking-api > "../../${GO_LOG}" 2>&1 &
 GO_PID=$!
 echo "✅ Go server berjalan (PID: ${GO_PID}), log: ${GO_LOG}"
 cd - >/dev/null
